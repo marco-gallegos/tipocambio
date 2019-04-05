@@ -19,7 +19,7 @@ class INI(object):
 
 # conexion a la db
 configuracion = INI()
-print(str(configuracion))
+#print(str(configuracion))
 mysql_db = MySQLDatabase(database=configuracion.db, user=configuracion.user, password=configuracion.password,
                          host=configuracion.ip, port=configuracion.port)
 

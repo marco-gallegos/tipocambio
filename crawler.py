@@ -2,7 +2,7 @@ from requests import get
 from requests.exceptions import RequestException
 from contextlib import closing
 from bs4 import BeautifulSoup
-from datetime import datetime
+from datetime import *
 from Server import *
 
 
@@ -79,24 +79,20 @@ class Crawler(object):
         return float(tcMasAlto)
 
     def SetMaxTcInServer(self):
-        servidor = Server()
+        tc = tipocamb()
         tcAlto = self.GetMaxTc()
-        fecha = datetime.today()
+        fecha = datetime.now()
         fecha = fecha.strftime("%Y-%m-%d")
         if tcAlto is 0:
             return False
-        conexion = servidor.getConection()
-        if conexion is False:
-            return False
-        db = conexion.cursor()
 
-        query = "Select * from tipocamb where fecha = '" + str(fecha) + "'"
+        # tipo de cambio de hoy
+        # query = "Select * from tipocamb where fecha = '" + str(fecha) + "'"
+        # query = tc.select().where(fecha = str(fecha))
 
-        db.execute(query)
+        print(query)
 
-        registro = db.fetchone()
-
-
+        exit()
         if registro is None:
             query = "insert into tipocamb(fecha, tipo_cambio) values('{0}',{1})"
             tcStored = 0
@@ -126,3 +122,12 @@ def log_error(e):
     make it do anything.
     """
     print(e)
+
+
+if __name__ == "__main__":
+    print("ok crawler")
+    url = "http://www.eldolar.info/es-MX/mexico/dia/hoy"
+    cr = Crawler(url)
+    tcAlto = cr.SetMaxTcInServer()
+
+    print(tcAlto)
