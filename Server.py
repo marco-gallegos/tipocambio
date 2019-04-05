@@ -1,51 +1,58 @@
-import MySQLdb
+from peewee import *
+import datetime
 
-class Server(object):
-    """Instancia de un servidor apartir de un archivo de configuracion ini"""
-
-    def __init__(self, iniFile):
-        """Constructor for Server"""
+class INI(object):
+    def __init__(self, iniFile="server.ini"):
         self.iniFile = iniFile
-        self.db = None
-        self.ip = None
-        self.port = None
-        self.user = None
-        self.password = None
-        self.GetIni()
-
-    def GetIni(self):
-        archivo = open(self.iniFile,"r")
+        archivo = open(self.iniFile, "r")
         info = archivo.readline()
         info = info.split(",")
         self.db = info[0]
         self.ip = info[1]
-        self.port = info[2]
+        self.port = int(info[2])
         self.user = info[3]
         self.password = info[4]
         archivo.close()
-
-    def testConection(self):
-        conexion = MySQLdb.connect(host = self.ip, port=int(self.port), db=self.db, user = self.user,
-                                   password = self.password)
-
-        if conexion:
-            return True
-        else:
-            return False
-
-        conexion.close()
-
-    def getConection(self):
-        conexion = MySQLdb.connect(host=self.ip, port=int(self.port), db=self.db, user=self.user,
-                                   password=self.password)
-        if conexion:
-            return conexion
-        else:
-            return False
-
     def __str__(self):
-        cadena  = "Servidor :\t" + str(self.ip) + "\n"
-        cadena += "DB       :\t" + str(self.db) + "\n"
-        cadena += "Puerto   :\t" + str(self.port) + "\n"
-        cadena += "Conexion :\t" + str(self.testConection()) + "\n"
-        return cadena
+        return str(f"db : {self.db}\tip : {self.ip}\tport: {str(self.port)}\tuser : {self.user}\tpass : {self.password}")
+
+
+# conexion a la db
+configuracion = INI()
+print(str(configuracion))
+mysql_db = MySQLDatabase(database=configuracion.db, user=configuracion.user, password=configuracion.password,
+                         host=configuracion.ip, port=configuracion.port)
+
+
+# clase abstracta
+class ORM_MYSQL(Model):
+    class Meta:
+        database = mysql_db
+
+    def test_conexion(self):
+        status = True
+        try:
+            mysql_db.connect()
+        except:
+            status = False
+        return status
+
+
+# modelo para tc
+class tipocamb(ORM_MYSQL):
+    Fecha = DateField(primary_key=True)
+    Tipo_Cambio = DoubleField()
+
+
+if __name__ == "__main__":
+    db = ORM_MYSQL()
+    res = db.test_conexion()
+    print(res)
+    if res:
+        print("ok")
+    else:
+        print("not ok")
+    query = tipocamb.select()
+
+    # for row in query:
+    #    print(f"fecha : {str(row.Fecha)}\ttc : {str(row.)}")

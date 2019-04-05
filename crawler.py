@@ -79,7 +79,7 @@ class Crawler(object):
         return float(tcMasAlto)
 
     def SetMaxTcInServer(self):
-        servidor = Server("server.ini")
+        servidor = Server()
         tcAlto = self.GetMaxTc()
         fecha = datetime.today()
         fecha = fecha.strftime("%Y-%m-%d")
