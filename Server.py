@@ -1,5 +1,5 @@
 from peewee import *
-import datetime
+from datetime import *
 
 class INI(object):
     def __init__(self, iniFile="server.ini"):

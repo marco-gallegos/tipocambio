@@ -2,8 +2,13 @@ from requests import get
 from requests.exceptions import RequestException
 from contextlib import closing
 from bs4 import BeautifulSoup
-from datetime import *
 from Server import *
+from ORM import *
+
+# import logging
+# logger = logging.getLogger('peewee')
+# logger.addHandler(logging.StreamHandler())
+# logger.setLevel(logging.DEBUG)
 
 
 class Crawler(object):
@@ -79,41 +84,40 @@ class Crawler(object):
         return float(tcMasAlto)
 
     def SetMaxTcInServer(self):
-        tc = tipocamb()
+        log = Log()
+        log.setup_db()
+
         tcAlto = self.GetMaxTc()
-        fecha = datetime.now()
+        fecha = datetime.today()
+        fecha_log = fecha.strftime("%Y-%m-%d %H:%M:%S")
         fecha = fecha.strftime("%Y-%m-%d")
         if tcAlto is 0:
+            Log.create(tc=tcAlto, fecha=fecha_log, mensaje="Error al obtener tc")
             return False
 
         # tipo de cambio de hoy
-        # query = "Select * from tipocamb where fecha = '" + str(fecha) + "'"
-        # query = tc.select().where(fecha = str(fecha))
+        fecha_actual_db_query = tipocamb.select().where(tipocamb.Fecha == fecha)
+        # print(str(f"registros encontrados : {fecha_actual_db_query.count()}"))
 
-        print(query)
+        if fecha_actual_db_query.count() is 0:
+            # no hay asi que se registra lo obtenido
+            newTc = tipocamb.create(Fecha = fecha, Tipo_Cambio = tcAlto)
+            print(f"se guardo {newTc.Tipo_Cambio}")
+            Log.create(tc = tcAlto,fecha=fecha_log,mensaje="Nuevo Registro insertado")
 
-        exit()
-        if registro is None:
-            query = "insert into tipocamb(fecha, tipo_cambio) values('{0}',{1})"
-            tcStored = 0
-            query = query.format(fecha,tcAlto)
-            print(query)
-            db.execute(query)
-            print("se registro el tc")
         else:
-            query = "update tipocamb set tipo_cambio = {0} where fecha = '{1}'"
-            tcStored = float(registro[1])
-            if tcStored < tcAlto:
-                query = query.format(tcAlto,fecha)
-                db.execute(query)
+            # tenemos tc almacenado hay que comparar
+            tcStored = fecha_actual_db_query.get()
+            print(f"Tc Almacenado {tcStored.Tipo_Cambio}  {tcStored.Fecha} ")
+            if tcStored.Tipo_Cambio < tcAlto:
+                tcStored.Tipo_Cambio = tcAlto
+                tcStored.save()
+                Log.create(tc=tcStored.Tipo_Cambio, fecha=fecha_log, mensaje="Se actualizo el tc")
                 print("se actualizo el tc a : " + str(tcAlto))
             else:
+                Log.create(tc=tcStored.Tipo_Cambio, fecha=fecha_log, mensaje="No Se actualia nada")
                 print("no se actualiza nada")
 
-        print("tc almacenado : " + str(tcStored))
-
-        conexion.close()
-        print(fecha)
 
 def log_error(e):
     """
@@ -125,9 +129,6 @@ def log_error(e):
 
 
 if __name__ == "__main__":
-    print("ok crawler")
     url = "http://www.eldolar.info/es-MX/mexico/dia/hoy"
     cr = Crawler(url)
-    tcAlto = cr.SetMaxTcInServer()
-
-    print(tcAlto)
+    cr.SetMaxTcInServer()

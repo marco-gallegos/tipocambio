@@ -1,6 +1,6 @@
 from peewee import *
 
-sqlite_db = SqliteDatabase('optimizacion.db',
+sqlite_db = SqliteDatabase('log.db',
     pragmas={
     'journal_mode': 'wal',
     'cache_size': -1024 * 64})
@@ -13,13 +13,15 @@ class ORM_LOG(Model):
 
     def setup_db(self):
         sqlite_db.connect()
-        sqlite_db.create_tables([log])
+        sqlite_db.create_tables([Log])
         sqlite_db.close()
 
 
-class log(ORM_LOG):
-    time = DateTimeField()
+class Log(ORM_LOG):
+    id = AutoField()
+    fecha = DateTimeField()
     tc = FloatField()
+    mensaje = CharField()
 
 
 if __name__ == "__main__":
