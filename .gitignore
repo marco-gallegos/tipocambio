@@ -8,6 +8,7 @@ __pycache__/
 *.py[cod]
 *$py.class
 *.db*
+Instalador Inno/Output
 
 # C extensions
 *.so
