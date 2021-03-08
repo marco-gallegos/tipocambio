@@ -1,0 +1,11 @@
+version: "3"
+
+services:
+  tipo_cambio_scrapper:
+    container_name: "tipo_cambio_scrapper_api"
+    build:
+      .
+    ports:
+      - 5555:5555
+    volumes:
+      - .:/app
