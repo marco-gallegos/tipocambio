@@ -1,0 +1,14 @@
+# @Author     Marco A. Gallegos Loaeza <ma_galeza@hotmail.com>
+# @Date       2021/03/01
+# @Updated    2021/03/01
+# @Description
+#   dependency description
+#   usage : pip-compile -> requirements.txt -> pip install  -r requirements.txt -U
+
+beautifulsoup4
+flask
+peewee
+pendulum
+pip-tools
+PyMySQL
+requests
