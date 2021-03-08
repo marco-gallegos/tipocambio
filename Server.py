@@ -1,5 +1,13 @@
+"""
+@Author     Marco A. Gallegos Loaeza <ma_galeza@hotmail.com>
+@Date       2019/12/01
+@Updated    2019/12/01
+@Description
+    legacy code
+"""
 from peewee import *
 import datetime
+
 
 class INI(object):
     def __init__(self, iniFile="server.ini"):
@@ -13,6 +21,7 @@ class INI(object):
         self.user = info[3]
         self.password = info[4]
         archivo.close()
+
     def __str__(self):
         return str(f"db : {self.db}\tip : {self.ip}\tport: {str(self.port)}\tuser : {self.user}\tpass : {self.password}")
 
@@ -54,5 +63,5 @@ if __name__ == "__main__":
         print("not ok")
     query = tipocamb.select()
 
-    # for row in query:
-    #    print(f"fecha : {str(row.Fecha)}\ttc : {str(row.)}")
+    for row in query:
+       print(f"fecha : {str(row.Fecha)}\ttc : {str(row.Tipocamb)}")

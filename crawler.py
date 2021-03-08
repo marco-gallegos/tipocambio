@@ -1,8 +1,17 @@
+"""
+@Author     Marco A. Gallegos Loaeza <ma_galeza@hotmail.com>
+@Date       2019/12/01
+@Updated    2019/12/01
+@Description
+    legacy code
+"""
+
 from requests import get
 from requests.exceptions import RequestException
 from contextlib import closing
 from bs4 import BeautifulSoup
-from datetime import *
+import datetime
+import pendulum
 from Server import *
 
 
@@ -11,7 +20,7 @@ class Crawler(object):
 
     def __init__(self, url):
         """Constructor for Crawler"""
-        self.url =url
+        self.url = url
 
     def simple_get(self,url):
         """
@@ -40,9 +49,7 @@ class Crawler(object):
                 and content_type.find('html') > -1)
 
     def GetMaxTc(self):
-        tcMasAlto = 0
         respuesta = self.simple_get(self.url)
-
 
         archivoHTML = open("respuesta.html", "w")
         archivoHTML.write(str(respuesta))
@@ -58,49 +65,54 @@ class Crawler(object):
         for row in rows:
             tds = row.find_all('td')
             nombre = tds[0].find_all('span')
-            nombre = nombre[1].text
-            nombre = nombre.upper()
+            nombre = nombre[1].text.upper()
             # print(nombre)
-            if len(tds) is 5:
+            if len(tds) == 5:
                 # print(tds[4].contents[0])
                 if nombre == "BANAMEX":
                     tiposdeCambio.append(tds[4].contents[0])
-                if nombre.find("DOF") is not -1:
+                if nombre.find("DOF") != -1:
                     tiposdeCambio.append(tds[4].contents[0])
             else:
                 # print(tds[3].contents[0])
                 if nombre == "BANAMEX":
                     tiposdeCambio.append(tds[3].contents[0])
-                if nombre.find("DOF") is not -1:
+                if nombre.find("DOF") != -1:
                     tiposdeCambio.append(tds[3].contents[0])
 
         tcMasAlto = max(tiposdeCambio)
 
+        #print(tiposdeCambio)
+        #print(tcMasAlto)
         return float(tcMasAlto)
 
     def SetMaxTcInServer(self):
+        db = ORM_MYSQL()
         tc = tipocamb()
         tcAlto = self.GetMaxTc()
-        fecha = datetime.now()
-        fecha = fecha.strftime("%Y-%m-%d")
-        if tcAlto is 0:
+        fecha = pendulum.now().strftime("%Y-%m-%d")
+        if tcAlto == 0:
+            print("tipo de cambio es 0 no se inserta en db")
             return False
 
         # tipo de cambio de hoy
         # query = "Select * from tipocamb where fecha = '" + str(fecha) + "'"
-        # query = tc.select().where(fecha = str(fecha))
+        query = (tc.select().where(tipocamb.Fecha == str(fecha)))
+        registro = None
+        for row in query:
+            print(row)
+            registro = row
 
-        print(query)
-
-        exit()
         if registro is None:
-            query = "insert into tipocamb(fecha, tipo_cambio) values('{0}',{1})"
-            tcStored = 0
-            query = query.format(fecha,tcAlto)
-            print(query)
-            db.execute(query)
-            print("se registro el tc")
+            #query = "insert into tipocamb(fecha, tipo_cambio) values('{0}',{1})"
+            #tcStored = 0
+            #query = query.format(fecha,tcAlto)
+            #print(query)
+            #db.execute(query)
+            tipocamb.create(Fecha=fecha, Tipo_Cambio=tcAlto)
+            print(f"se registro el tc {tcAlto}")
         else:
+            """
             query = "update tipocamb set tipo_cambio = {0} where fecha = '{1}'"
             tcStored = float(registro[1])
             if tcStored < tcAlto:
@@ -109,11 +121,15 @@ class Crawler(object):
                 print("se actualizo el tc a : " + str(tcAlto))
             else:
                 print("no se actualiza nada")
+            """
+            tcStored = registro.Tipo_Cambio
+            if tcStored < tcAlto:
+                tipocamb.update({tipocamb.Tipo_Cambio: tcAlto}) \
+                    .where(tipocamb.Fecha == fecha).execute()
+                print("se actualizo el tc a : " + str(tcAlto))
+            else:
+                print("no se actualiza nada")
 
-        print("tc almacenado : " + str(tcStored))
-
-        conexion.close()
-        print(fecha)
 
 def log_error(e):
     """

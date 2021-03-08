@@ -1,8 +1,11 @@
+*.ignore.ini*
 server.ini
 .idea/
 respuesta.html
 diario.log
 *.ini
+optimizacion.db
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
