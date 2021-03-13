@@ -16,6 +16,8 @@ click==7.1.2
     #   pip-tools
 flask==1.1.2
     # via -r requirements.in
+gunicorn==20.0.4
+    # via -r requirements.in
 idna==2.10
     # via requests
 itsdangerous==1.1.0
@@ -38,6 +40,8 @@ pytzdata==2020.1
     # via pendulum
 requests==2.25.1
     # via -r requirements.in
+schedule==1.0.0
+    # via -r requirements.in
 six==1.15.0
     # via python-dateutil
 soupsieve==2.2
@@ -49,3 +53,4 @@ werkzeug==1.0.1
 
 # The following packages are considered to be unsafe in a requirements file:
 # pip
+# setuptools
