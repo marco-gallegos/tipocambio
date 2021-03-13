@@ -1,11 +1,23 @@
-version: "3"
+# @Author   Marco A. Gallegos Loaeza <ma_galeza@hotmail.com>
+# @Date     2020/03/11
+# @Update   2020/03/11 -> initial
+# @Description
+#   This a docker  compose file to deploy the app on production.
+version: "3.3"
 
 services:
-  tipo_cambio_scrapper:
-    container_name: "tipo_cambio_scrapper_api"
+  tipo_cambio_api:
+    container_name: "tipo_cambio_api"
     build:
       .
     ports:
       - 5555:5555
+    volumes:
+      - .:/app
+  tipo_cambio_crons:
+    container_name: "tipo_cambio_crons"
+    build:
+      dockerfile: dockerfile.crons
+      context: .
     volumes:
       - .:/app

@@ -1,0 +1,22 @@
+# @Author   Marco A. Gallegos Loaeza <ma_galeza@hotmail.com>
+# @Date     2020/03/11
+# @Upate     2020/03/11 -> initial
+# @Description
+#   This a docker file to deploy the app on production.
+FROM python:3.8-alpine
+
+WORKDIR /app
+
+#RUN apt update -y && apt install tzdata cron -y
+RUN apk add tzdata
+#RUN service cron start
+
+ENV TZ=America/Mexico_City
+
+COPY requirements.txt .
+
+COPY crontab /var/spool/cron/crontabs/root
+
+RUN pip install -r requirements.txt
+
+CMD python -u scheduled_tasks.py
