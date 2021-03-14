@@ -1,3 +1,3 @@
 cd C:\TipoCambio
-python main.py
+main.exe
 exit

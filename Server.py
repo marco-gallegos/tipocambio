@@ -6,7 +6,7 @@
     legacy code
 """
 from peewee import *
-import datetime
+from datetime import *
 
 
 class INI(object):
@@ -30,7 +30,7 @@ class INI(object):
 configuracion = INI()
 #print(str(configuracion))
 mysql_db = MySQLDatabase(database=configuracion.db, user=configuracion.user, password=configuracion.password,
-                         host=configuracion.ip, port=configuracion.port)
+                            host=configuracion.ip, port=configuracion.port)
 
 
 # clase abstracta
@@ -64,4 +64,4 @@ if __name__ == "__main__":
     query = tipocamb.select()
 
     for row in query:
-       print(f"fecha : {str(row.Fecha)}\ttc : {str(row.Tipocamb)}")
+        print(f"fecha : {str(row.Fecha)}\ttc : {str(row.Tipocamb)}")
