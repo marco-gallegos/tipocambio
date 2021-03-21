@@ -4,7 +4,8 @@ server.ini
 respuesta.html
 diario.log
 *.ini
-optimizacion.db
+*.db
+*.sqlite*
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
