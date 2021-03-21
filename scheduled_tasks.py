@@ -9,12 +9,14 @@ import schedule
 import time, pendulum
 from crawler import *
 
+
 def ok():
     url = "http://www.eldolar.info/es-MX/mexico/dia/hoy"
     pagina = Crawler(url)
     pagina.SetMaxTcInServer()
 
-#schedule.every(2).seconds.do(ok)
+
+# schedule.every(2).seconds.do(ok)
 schedule.every().day.at("08:50").do(ok)
 schedule.every().day.at("09:00").do(ok)
 schedule.every().day.at("09:10").do(ok)
@@ -23,4 +25,4 @@ schedule.every().day.at("09:30").do(ok)
 
 while True:
     schedule.run_pending()
-    time.sleep(60*60)
+    time.sleep(seconnd=60*5)
