@@ -5,12 +5,19 @@
 #   dependency description
 #   usage : pip-compile -> requirements.txt -> pip install  -r requirements.txt -U
 
+aiosqlite
 beautifulsoup4
-flask
+bcrypt
+fastapi
 gunicorn
+passlib
 peewee
 pendulum
 pip-tools
+PyJWT
 PyMySQL
+python-multipart
 requests
 schedule
+tortoise-orm
+uvicorn
