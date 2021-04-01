@@ -19,6 +19,7 @@ async def current_tc():
     return {
         "hola": "lklkl"
     }
+    
 """
 import jwt
 from fastapi import FastAPI, Depends, HTTPException, status
@@ -98,6 +99,9 @@ async def create_user(user: UserIn_Pydantic):
 @app.get('/users/me', response_model=User_Pydantic)
 async def get_user(user: User_Pydantic = Depends(get_current_user)):
     return user
+
+#@app.get('/users/me', response_model=User_Pydantic)
+#async def get_user(user: User_Pydantic = Depends(get_current_user)):
 
 # migration
 register_tortoise(
